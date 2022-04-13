@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-from telethon import events
+from telethon import Button, events
 from telethon.errors import (
     AlreadyInConversationError,
     AuthKeyDuplicatedError,
