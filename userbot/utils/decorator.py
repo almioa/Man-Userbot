@@ -5,12 +5,26 @@
 
 import inspect
 import re
+import sys
 from pathlib import Path
 
 from telethon import events
+from telethon.errors import (
+    AlreadyInConversationError,
+    AuthKeyDuplicatedError,
+    BotInlineDisabledError,
+    BotResponseTimeoutError,
+    ChatSendInlineForbiddenError,
+    ChatSendMediaForbiddenError,
+    ChatSendStickersForbiddenError,
+    FloodWaitError,
+    MessageIdInvalidError,
+    MessageNotModifiedError,
+)
 
 from userbot import (
     BL_CHAT,
+    BOTLOG_CHATID,
     CMD_HANDLER,
     CMD_LIST,
     LOAD_PLUG,
@@ -87,18 +101,67 @@ def man_cmd(
         async def wrapper(event):
             if group_only and not event.is_group:
                 return await edit_delete(
-                    event, "`This command is only for groups.`", 10
+                    event, "`Perintah ini hanya bisa digunakan di grup.`", 10
                 )
             if private_only and not event.is_private:
                 return await edit_delete(
-                    event, "`This command is only for private chat.`", 10
+                    event, "`Perintah ini hanya bisa digunakan di private chat.`", 10
                 )
             try:
                 await func(event)
+            # Credits: @mrismanaziz
+            # FROM Man-Userbot <https://github.com/mrismanaziz/Man-Userbot>
+            # t.me/SharingUserbot & t.me/Lunatic0de
+            except MessageNotModifiedError as er:
+                LOGS.error(er)
+            except MessageIdInvalidError:
+                LOGS.error(er)
+            except BotInlineDisabledError as er:
+                await edit_delete(event, "`Silahkan aktifkan mode Inline untuk bot`")
+            except ChatSendStickersForbiddenError:
+                await edit_delete(
+                    event, "`Tidak dapat mengirim stiker di obrolan ini`"
+                )
+            except BotResponseTimeoutError:
+                await edit_delete(
+                    event, "`The bot didnt answer to your query in time`"
+                )
+            except ChatSendMediaForbiddenError:
+                await edit_delete(event, "`Tidak dapat mengirim media dalam obrolan ini`")
+            except AlreadyInConversationError:
+                await edit_delete(
+                    event,
+                    "`Percakapan sudah terjadi dengan obrolan yang diberikan. coba lagi setelah beberapa waktu.`"
+                )
+            except ChatSendInlineForbiddenError:
+                await edit_delete(
+                    event, "`Tidak dapat mengirim pesan inline dalam obrolan ini.`"
+                )
+            except FloodWaitError as e:
+                LOGS.error(
+                    f"Telah Terjadi flood wait error tunggu {e.seconds} detik dan coba lagi"
+                )
+                await event.delete()
+                await asyncio.sleep(e.seconds + 5)
+            except AuthKeyDuplicatedError as er:
+                LOGS.exception(er)
+                try:
+                    await tgbot.send_message(
+                        BOTLOG_CHATID,
+                        "String Session Telah kedaluwarsa, buat string baru dari",
+                        buttons=[
+                            Button.url("sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ sᴛʀɪɴɢ", "t.me/StringManRoBot?start="),
+                        ],
+                    )
+                except BaseException:
+                    pass
+                sys.exit()
             except events.StopPropagation:
                 raise events.StopPropagation
             except KeyboardInterrupt:
                 pass
+            except BaseException as e:
+                LOGS.exception(e)
 
         if bot:
             if not disable_edited:
