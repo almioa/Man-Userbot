@@ -23,11 +23,14 @@ from userbot import (
     bot,
     tgbot,
 )
+from userbot.utils import edit_delete
 
 
 def man_cmd(
     pattern: str = None,
     allow_sudo: bool = True,
+    group_only: bool = False,
+    private_only: bool = False,
     disable_edited: bool = False,
     forword=False,
     command: str = None,
@@ -80,25 +83,42 @@ def man_cmd(
                 CMD_LIST.update({file_test: [cmd1]})
 
     def decorator(func):
+        async def wrapper(event):
+            if group_only and not event.is_group:
+                return await edit_delete(
+                    event, "`This command is only for groups.`", 10
+                )
+            if private_only and not event.is_private:
+                return await edit_delete(
+                    event, "`This command is only for private chat.`", 10
+                )
+            try:
+                await func(event)
+            except events.StopPropagation:
+                raise events.StopPropagation
+            except KeyboardInterrupt:
+                pass
+
         if bot:
             if not disable_edited:
                 bot.add_event_handler(
-                    func, events.MessageEdited(**args, outgoing=True, pattern=man_reg)
+                    wrapper,
+                    events.MessageEdited(**args, outgoing=True, pattern=man_reg),
                 )
             bot.add_event_handler(
-                func, events.NewMessage(**args, outgoing=True, pattern=man_reg)
+                wrapper, events.NewMessage(**args, outgoing=True, pattern=man_reg)
             )
         if bot:
             if allow_sudo:
                 if not disable_edited:
                     bot.add_event_handler(
-                        func,
+                        wrapper,
                         events.MessageEdited(
                             **args, from_users=list(SUDO_USERS), pattern=sudo_reg
                         ),
                     )
                 bot.add_event_handler(
-                    func,
+                    wrapper,
                     events.NewMessage(
                         **args, from_users=list(SUDO_USERS), pattern=sudo_reg
                     ),
@@ -106,40 +126,44 @@ def man_cmd(
         if MAN2:
             if not disable_edited:
                 MAN2.add_event_handler(
-                    func, events.MessageEdited(**args, outgoing=True, pattern=man_reg)
+                    wrapper,
+                    events.MessageEdited(**args, outgoing=True, pattern=man_reg),
                 )
             MAN2.add_event_handler(
-                func, events.NewMessage(**args, outgoing=True, pattern=man_reg)
+                wrapper, events.NewMessage(**args, outgoing=True, pattern=man_reg)
             )
         if MAN3:
             if not disable_edited:
                 MAN3.add_event_handler(
-                    func, events.MessageEdited(**args, outgoing=True, pattern=man_reg)
+                    wrapper,
+                    events.MessageEdited(**args, outgoing=True, pattern=man_reg),
                 )
             MAN3.add_event_handler(
-                func, events.NewMessage(**args, outgoing=True, pattern=man_reg)
+                wrapper, events.NewMessage(**args, outgoing=True, pattern=man_reg)
             )
         if MAN4:
             if not disable_edited:
                 MAN4.add_event_handler(
-                    func, events.MessageEdited(**args, outgoing=True, pattern=man_reg)
+                    wrapper,
+                    events.MessageEdited(**args, outgoing=True, pattern=man_reg),
                 )
             MAN4.add_event_handler(
-                func, events.NewMessage(**args, outgoing=True, pattern=man_reg)
+                wrapper, events.NewMessage(**args, outgoing=True, pattern=man_reg)
             )
         if MAN5:
             if not disable_edited:
                 MAN5.add_event_handler(
-                    func, events.MessageEdited(**args, outgoing=True, pattern=man_reg)
+                    wrapper,
+                    events.MessageEdited(**args, outgoing=True, pattern=man_reg),
                 )
             MAN5.add_event_handler(
-                func, events.NewMessage(**args, outgoing=True, pattern=man_reg)
+                wrapper, events.NewMessage(**args, outgoing=True, pattern=man_reg)
             )
         try:
-            LOAD_PLUG[file_test].append(func)
+            LOAD_PLUG[file_test].append(wrapper)
         except Exception:
-            LOAD_PLUG.update({file_test: [func]})
-        return func
+            LOAD_PLUG.update({file_test: [wrapper]})
+        return wrapper
 
     return decorator
 
