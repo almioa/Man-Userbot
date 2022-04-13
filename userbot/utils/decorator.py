@@ -116,22 +116,20 @@ def man_cmd(
                 LOGS.error(er)
             except MessageIdInvalidError:
                 LOGS.error(er)
-            except BotInlineDisabledError as er:
+            except BotInlineDisabledError:
                 await edit_delete(event, "`Silahkan aktifkan mode Inline untuk bot`")
             except ChatSendStickersForbiddenError:
-                await edit_delete(
-                    event, "`Tidak dapat mengirim stiker di obrolan ini`"
-                )
+                await edit_delete(event, "`Tidak dapat mengirim stiker di obrolan ini`")
             except BotResponseTimeoutError:
-                await edit_delete(
-                    event, "`The bot didnt answer to your query in time`"
-                )
+                await edit_delete(event, "`The bot didnt answer to your query in time`")
             except ChatSendMediaForbiddenError:
-                await edit_delete(event, "`Tidak dapat mengirim media dalam obrolan ini`")
+                await edit_delete(
+                    event, "`Tidak dapat mengirim media dalam obrolan ini`"
+                )
             except AlreadyInConversationError:
                 await edit_delete(
                     event,
-                    "`Percakapan sudah terjadi dengan obrolan yang diberikan. coba lagi setelah beberapa waktu.`"
+                    "`Percakapan sudah terjadi dengan obrolan yang diberikan. coba lagi setelah beberapa waktu.`",
                 )
             except ChatSendInlineForbiddenError:
                 await edit_delete(
@@ -150,7 +148,9 @@ def man_cmd(
                         BOTLOG_CHATID,
                         "String Session Telah kedaluwarsa, buat string baru dari",
                         buttons=[
-                            Button.url("sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ sᴛʀɪɴɢ", "t.me/StringManRoBot?start="),
+                            Button.url(
+                                "sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ sᴛʀɪɴɢ", "t.me/StringManRoBot?start="
+                            ),
                         ],
                     )
                 except BaseException:
