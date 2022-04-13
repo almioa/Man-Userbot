@@ -37,17 +37,10 @@ def user_list(l, n):
         yield l[i : i + n]
 
 
-@man_cmd(pattern="startvc$", group_only=True)
+@man_cmd(pattern="startvc$", admins_only=True)
 @register(pattern=r"^\.startvcs$", sudo=True)
 async def start_voice(c):
     me = await c.client.get_me()
-    chat = await c.get_chat()
-    admin = chat.admin_rights
-    creator = chat.creator
-
-    if not admin and not creator:
-        await edit_delete(c, f"**Maaf {me.first_name} Bukan Admin 👮**")
-        return
     try:
         await c.client(startvc(c.chat_id))
         await edit_or_reply(c, "`Voice Chat Started...`")
@@ -55,17 +48,10 @@ async def start_voice(c):
         await edit_delete(c, f"**ERROR:** `{ex}`")
 
 
-@man_cmd(pattern="stopvc$", group_only=True)
+@man_cmd(pattern="stopvc$", admins_only=True)
 @register(pattern=r"^\.stopvcs$", sudo=True)
 async def stop_voice(c):
     me = await c.client.get_me()
-    chat = await c.get_chat()
-    admin = chat.admin_rights
-    creator = chat.creator
-
-    if not admin and not creator:
-        await edit_delete(c, f"**Maaf {me.first_name} Bukan Admin 👮**")
-        return
     try:
         await c.client(stopvc(await get_call(c)))
         await edit_or_reply(c, "`Voice Chat Stopped...`")
@@ -91,21 +77,13 @@ async def _(c):
     await xxnx.edit(f"`{z}` **Orang Berhasil diundang ke VCG**")
 
 
-@man_cmd(pattern="vctitle(?: |$)(.*)", group_only=True)
+@man_cmd(pattern="vctitle(?: |$)(.*)", admins_only=True)
 @register(pattern=r"^\.cvctitle$", sudo=True)
 async def change_title(e):
     title = e.pattern_match.group(1)
     me = await e.client.get_me()
-    chat = await e.get_chat()
-    admin = chat.admin_rights
-    creator = chat.creator
-
     if not title:
         return await edit_delete(e, "**Silahkan Masukan Title Obrolan Suara Grup**")
-
-    if not admin and not creator:
-        await edit_delete(e, f"**Maaf {me.first_name} Bukan Admin 👮**")
-        return
     try:
         await e.client(settitle(call=await get_call(e), title=title.strip()))
         await edit_or_reply(e, f"**Berhasil Mengubah Judul VCG Menjadi** `{title}`")
