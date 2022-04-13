@@ -126,9 +126,13 @@ def man_cmd(
             except MessageIdInvalidError:
                 LOGS.error(er)
             except BotInlineDisabledError:
-                await edit_delete(event, "`Silahkan aktifkan mode Inline untuk bot`", 10)
+                await edit_delete(
+                    event, "`Silahkan aktifkan mode Inline untuk bot`", 10
+                )
             except ChatSendStickersForbiddenError:
-                await edit_delete(event, "`Tidak dapat mengirim stiker di obrolan ini`", 10)
+                await edit_delete(
+                    event, "`Tidak dapat mengirim stiker di obrolan ini`", 10
+                )
             except BotResponseTimeoutError:
                 await edit_delete(event, "`The bot didnt answer to your query in time`")
             except ChatSendMediaForbiddenError:
