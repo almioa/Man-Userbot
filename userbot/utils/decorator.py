@@ -5,10 +5,9 @@
 
 import inspect
 import re
-import sys
 from pathlib import Path
 
-from telethon import Button, events
+from telethon import events
 from telethon.errors import (
     AlreadyInConversationError,
     AuthKeyDuplicatedError,
@@ -24,7 +23,6 @@ from telethon.errors import (
 
 from userbot import (
     BL_CHAT,
-    BOTLOG_CHATID,
     CMD_HANDLER,
     CMD_LIST,
     LOAD_PLUG,
@@ -143,7 +141,9 @@ def man_cmd(
                 await asyncio.sleep(e.seconds + 5)
             except AuthKeyDuplicatedError as er:
                 LOGS.exception(er)
-                LOGS.info("String Session telah kedaluwarsa, buat string baru dari @StringManRobot")
+                LOGS.info(
+                    "String Session telah kedaluwarsa, buat string baru dari @StringManRobot"
+                )
             except events.StopPropagation:
                 raise events.StopPropagation
             except KeyboardInterrupt:
