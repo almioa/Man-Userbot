@@ -143,19 +143,7 @@ def man_cmd(
                 await asyncio.sleep(e.seconds + 5)
             except AuthKeyDuplicatedError as er:
                 LOGS.exception(er)
-                try:
-                    await tgbot.send_message(
-                        BOTLOG_CHATID,
-                        "String Session Telah kedaluwarsa, buat string baru dari",
-                        buttons=[
-                            Button.url(
-                                "sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ sᴛʀɪɴɢ", "t.me/StringManRoBot?start="
-                            ),
-                        ],
-                    )
-                except BaseException:
-                    pass
-                sys.exit()
+                LOGS.info("String Session telah kedaluwarsa, buat string baru dari @StringManRobot")
             except events.StopPropagation:
                 raise events.StopPropagation
             except KeyboardInterrupt:
