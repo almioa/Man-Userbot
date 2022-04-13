@@ -40,7 +40,7 @@ def user_list(l, n):
 @man_cmd(pattern="startvc$", admins_only=True)
 @register(pattern=r"^\.startvcs$", sudo=True)
 async def start_voice(c):
-    me = await c.client.get_me()
+    await c.client.get_me()
     try:
         await c.client(startvc(c.chat_id))
         await edit_or_reply(c, "`Voice Chat Started...`")
@@ -51,7 +51,7 @@ async def start_voice(c):
 @man_cmd(pattern="stopvc$", admins_only=True)
 @register(pattern=r"^\.stopvcs$", sudo=True)
 async def stop_voice(c):
-    me = await c.client.get_me()
+    await c.client.get_me()
     try:
         await c.client(stopvc(await get_call(c)))
         await edit_or_reply(c, "`Voice Chat Stopped...`")
@@ -81,7 +81,7 @@ async def _(c):
 @register(pattern=r"^\.cvctitle$", sudo=True)
 async def change_title(e):
     title = e.pattern_match.group(1)
-    me = await e.client.get_me()
+    await e.client.get_me()
     if not title:
         return await edit_delete(e, "**Silahkan Masukan Title Obrolan Suara Grup**")
     try:
