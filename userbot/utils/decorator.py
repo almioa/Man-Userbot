@@ -101,9 +101,13 @@ def man_cmd(
             chat = event.chat
             if admins_only:
                 if event.is_private:
-                    return await edit_delete(event, "`Perintah ini hanya bisa digunakan di grup/channel.`")
+                    return await edit_delete(
+                        event, "`Perintah ini hanya bisa digunakan di grup/channel.`"
+                    )
                 if not (chat.admin_rights or chat.creator):
-                    return await edit_delete(event, "**Maaf anda bukan admin di obrolan ini**")
+                    return await edit_delete(
+                        event, "**Maaf anda bukan admin di obrolan ini**"
+                    )
             if group_only and not event.is_group:
                 return await edit_delete(
                     event, "`Perintah ini hanya bisa digunakan di grup/channel.`", 10
