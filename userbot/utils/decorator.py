@@ -102,11 +102,11 @@ def man_cmd(
             if admins_only:
                 if event.is_private:
                     return await edit_delete(
-                        event, "`Perintah ini hanya bisa digunakan di grup/channel.`"
+                        event, "`Perintah ini hanya bisa digunakan di grup.`", 10
                     )
                 if not (chat.admin_rights or chat.creator):
                     return await edit_delete(
-                        event, "**Maaf anda bukan admin di obrolan ini**"
+                        event, f"**Maaf anda bukan admin di {chat.title}**", 10
                     )
             if group_only and not event.is_group:
                 return await edit_delete(
@@ -126,14 +126,14 @@ def man_cmd(
             except MessageIdInvalidError:
                 LOGS.error(er)
             except BotInlineDisabledError:
-                await edit_delete(event, "`Silahkan aktifkan mode Inline untuk bot`")
+                await edit_delete(event, "`Silahkan aktifkan mode Inline untuk bot`", 10)
             except ChatSendStickersForbiddenError:
-                await edit_delete(event, "`Tidak dapat mengirim stiker di obrolan ini`")
+                await edit_delete(event, "`Tidak dapat mengirim stiker di obrolan ini`", 10)
             except BotResponseTimeoutError:
                 await edit_delete(event, "`The bot didnt answer to your query in time`")
             except ChatSendMediaForbiddenError:
                 await edit_delete(
-                    event, "`Tidak dapat mengirim media dalam obrolan ini`"
+                    event, "`Tidak dapat mengirim media dalam obrolan ini`", 10
                 )
             except AlreadyInConversationError:
                 await edit_delete(
@@ -142,7 +142,7 @@ def man_cmd(
                 )
             except ChatSendInlineForbiddenError:
                 await edit_delete(
-                    event, "`Tidak dapat mengirim pesan inline dalam obrolan ini.`"
+                    event, "`Tidak dapat mengirim pesan inline dalam obrolan ini.`", 10
                 )
             except FloodWaitError as e:
                 LOGS.error(
