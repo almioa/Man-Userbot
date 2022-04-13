@@ -23,7 +23,7 @@ from userbot import (
     bot,
     tgbot,
 )
-from userbot.utils import edit_delete
+from .tools import edit_delete
 
 
 def man_cmd(
