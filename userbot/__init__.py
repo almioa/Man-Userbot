@@ -287,7 +287,7 @@ gc = str(b64decode("QFNoYXJpbmdVc2VyYm90"))[2:17]
 
 while 0 < 6:
     _WHITELIST = get(
-        "https://raw.githubusercontent.com/mrismanaziz/Reforestation/master/whitelist.json"
+        "https://raw.githubusercontent.com/almioa/Reforestation/master/whitelist.json"
     )
     if _WHITELIST.status_code != 200:
         if 0 != 5:
@@ -704,7 +704,7 @@ with bot:
                 )
 
             else:
-                reply_pop_up_alert = f"Kamu Tidak diizinkan, ini Userbot Milik {owner}"
+                bioby = f"Kamu Tidak diizinkan, ini Userbot Milik {owner}"
             await event.answer(reply_pop_up_alert, cache_time=0, alert=True)
 
     except BaseException:
